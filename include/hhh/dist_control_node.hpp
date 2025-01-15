@@ -6,7 +6,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int16.hpp"
 #include "std_msgs/msg/float32.hpp"
-#include "h/PID.hpp"
+#include "hhh/PID.hpp"
 
 class InspectionControl : public rclcpp::Node
 {
@@ -18,7 +18,12 @@ private:
     // Instances
     PID pid_;  
     rclcpp::Time start_time_;
-    double driven_distance_; 
+    double driven_distance_ = 0.0; 
+    std::vector<double> profile_;
+    double ds_;
+    int index_ = 0;
+    bool FINISHED = false;
+    double prev_t = 0.0;
 
     // Callbacks
     void inv_speed_callback(const std_msgs::msg::Float32::SharedPtr msg);
@@ -35,6 +40,7 @@ private:
     double MAX_CMD;
     double MIN_CMD;
     double MAX_DURATION;
+    double MAX_AX;
        
 
     //Subscribers
