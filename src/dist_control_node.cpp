@@ -56,7 +56,7 @@ void InspectionControl::inv_speed_callback(const std_msgs::msg::Float32::SharedP
     double dt = this->get_clock()->now().seconds() - prev_t;
     prev_t = this->get_clock()->now().seconds();
 
-    if(vx_>0.1){
+    if(vx_>0.1 && as_status_==2){
         driven_distance_ += vx_*dt;
     }
 
@@ -79,10 +79,9 @@ void InspectionControl::as_status_callback(const std_msgs::msg::Int16::SharedPtr
 
 void InspectionControl::on_timer()
 {   
-    double dt = this->get_clock()->now().seconds() - start_time_.seconds();
     std::cout << index_ << "  " << profile_.size() << std::endl;
     double target = profile_[index_];
-    if(as_status_ == 2 && !FINISHED && dt < MAX_DURATION){
+    if(as_status_ == 2 && !FINISHED){
         auto cmd_msg = std_msgs::msg::Float32();
 
 
@@ -93,7 +92,7 @@ void InspectionControl::on_timer()
         
         cmd_pub_->publish(cmd_msg);
 
-    } else if (FINISHED || dt>=MAX_DURATION){
+    } else if (FINISHED){
         auto finish_msg = std_msgs::msg::Int16();
         finish_msg.data = 0x03;
         finish_pub_->publish(finish_msg);
