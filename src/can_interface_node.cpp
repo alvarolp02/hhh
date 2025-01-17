@@ -1,7 +1,7 @@
 #include "hhh/can_interface_node.hpp"
 
 int velMax = 5500;
-float wheelRadius = 0.2;
+float wheelRadius = 0.225;
 float transmissionRatio = 0.24444444444444444;//11/45;
 
 CanInterface::CanInterface() : Node("can_interface"){

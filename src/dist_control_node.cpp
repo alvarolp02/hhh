@@ -7,8 +7,8 @@ InspectionControl::InspectionControl() : Node("inspection_control_node"){
     start_time_ = this->get_clock()->now();
     
     // TODO adjust
-    TARGET_SPEED = 2.0; // m/s
-    TARGET_DISTANCE = 10.0; // m
+    TARGET_SPEED = 4.0; // m/s
+    TARGET_DISTANCE = 6.0; // m
     MAX_CMD = 0.1;     // %inv
     MIN_CMD = 0.0;     // %inv
     MAX_DURATION = 30.0; // s
@@ -19,7 +19,7 @@ InspectionControl::InspectionControl() : Node("inspection_control_node"){
     for (int i=1; i<999; i++){
         profile_.push_back(TARGET_SPEED);
     }
-    profile_.push_back(0.0);
+    profile_.push_back(0.5);
 
     for (int i=1; i<1000; i++){
         if(profile_[i]>profile_[i-1]){
@@ -56,7 +56,7 @@ void InspectionControl::inv_speed_callback(const std_msgs::msg::Float32::SharedP
     double dt = this->get_clock()->now().seconds() - prev_t;
     prev_t = this->get_clock()->now().seconds();
 
-    if(vx_>0.1 && as_status_==2){
+    if(vx_>0.1 && as_status_==2 && dt<0.02 && vx_ < 2*TARGET_SPEED){
         driven_distance_ += vx_*dt;
     }
 
@@ -73,6 +73,7 @@ void InspectionControl::as_status_callback(const std_msgs::msg::Int16::SharedPtr
 {
     if (msg->data == 0x02 && as_status_ != 0x02){
         start_time_ = this->get_clock()->now();
+        driven_distance_=0.0;
     }
     as_status_ = msg->data;
 }
