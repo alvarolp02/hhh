@@ -8,18 +8,18 @@ InspectionControl::InspectionControl() : Node("inspection_control_node"){
     
     // TODO adjust
     TARGET_SPEED = 4.0; // m/s
-    TARGET_DISTANCE = 6.0; // m
-    MAX_CMD = 0.1;     // %inv
+    TARGET_DISTANCE = 7.0; // m
+    MAX_CMD = 0.15;     // %inv
     MIN_CMD = 0.0;     // %inv
     MAX_DURATION = 30.0; // s
     MAX_AX = 5; // m/s2
 
     ds_=TARGET_DISTANCE/1000;
-    profile_.push_back(0.1);
+    profile_.push_back(1.0);
     for (int i=1; i<999; i++){
         profile_.push_back(TARGET_SPEED);
     }
-    profile_.push_back(0.5);
+    profile_.push_back(0.1);
 
     for (int i=1; i<1000; i++){
         if(profile_[i]>profile_[i-1]){
