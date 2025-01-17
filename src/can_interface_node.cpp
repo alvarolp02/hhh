@@ -53,11 +53,14 @@ CanInterface::CanInterface() : Node("can_interface"){
     }
 
 
+    motorSpeedPub = this->create_publisher<std_msgs::msg::Float32>("/can/inv_speed", 10);
+    ASStatusPub = this->create_publisher<std_msgs::msg::Int16>("/can/AS_status", 10);
+
+    heartBeatTimer = this->create_wall_timer(0.1s, std::bind(&CanInterface::pubHeartBeat, this));
+
     controlsSub = this->create_subscription<std_msgs::msg::Float32>("/controller/cmd", 10, std::bind(&CanInterface::controlsCallback, this, std::placeholders::_1));
     ASStatusSub = this->create_subscription<std_msgs::msg::Int16>("/can/AS_status", 10, std::bind(&CanInterface::ASStatusCallback, this, std::placeholders::_1));
     
-    motorSpeedPub = this->create_publisher<std_msgs::msg::Float32>("/can/inv_speed", 10);
-    ASStatusPub = this->create_publisher<std_msgs::msg::Int16>("/can/AS_status", 10);
 
     std::thread thread_1(&CanInterface::readCan1, this);
 
@@ -164,6 +167,16 @@ void CanInterface::ASStatusCallback(std_msgs::msg::Int16 msg)
 
         write(socketCan1, &frame, sizeof(struct can_frame));   
     }
+}
+
+void CanInterface::pubHeartBeat()
+{
+    struct can_frame frame;
+    frame.can_id = 0x183;             
+    frame.can_dlc = 1;                
+    frame.data[0] = 0x00;
+
+    write(socketCan0, &frame, sizeof(struct can_frame));
 }
 
 int main(int argc, char * argv[])

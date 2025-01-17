@@ -28,6 +28,7 @@ private :
 
     void controlsCallback(std_msgs::msg::Float32);
     void ASStatusCallback(std_msgs::msg::Int16);
+    void pubHeartBeat();
 
     void readCan1();
 
@@ -39,6 +40,7 @@ private :
 
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr controlsSub;
     rclcpp::Subscription<std_msgs::msg::Int16>::SharedPtr ASStatusSub;
+    rclcpp::TimerBase::SharedPtr heartBeatTimer;
 
    
     rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr motorSpeedPub;
